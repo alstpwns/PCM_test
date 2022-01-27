@@ -4,6 +4,7 @@
 		<link rel="stylesheet" href="style.css">
 		
 		<script>
+		let projectName;
 		let subjectNum;
 		let testerNum;
 		let subjectList;
@@ -47,7 +48,7 @@
 				for (let i=0; i<subjectNum ; i++){
 
 					
-					_subjectInput = _subjectInput + `<p>${i+1}번째 평가대상 입력 <input type="text" id="subjectNameInput${i}" value="${String.fromCharCode([65+i])}"> </p>`;	
+					_subjectInput = _subjectInput + `<p>Item ${i+1} (Default:${String.fromCharCode([65+i])}) <input type="text" id="subjectNameInput${i}" value="${String.fromCharCode([65+i])}"> </p>`;	
 
 					 
 				}
@@ -85,7 +86,7 @@
 				if (testerCount>testerNum){
 					return TestProcessEnd();
 				}else{
-					_testerInput = _testerInput + `<form id="form"> <p>${_ntester}번째 평가자 이름 입력 <input type="text" id="testerNameInput${_ntester}" value="${_ntester}번 평가자"> </p>`
+					_testerInput = _testerInput + `<form id="form"> <p>Person ${_ntester} (Default: Person ${_ntester}) <input type="text" id="testerNameInput${_ntester}" value="Person ${_ntester}"> </p>`
 					let k =0;
 					
 						for (let i=0; i<subjectList.length ; i++){
@@ -307,13 +308,13 @@
 				PCM Test
 			</p>
 			<div>
-				분석할 평가대상의 수량 
+				Number of items to compare
 				<input id="subjectNum" type="range" min="2" max="10" step="1" value="1" oninput="document.getElementById('subShow').innerHTML=this.value;" style="width: 50%;">
         		<span id="subShow">2</span>
 				<br>
 		
 				
-				평가자의 수
+				Number of people doing comparison
 				<input id="testerNum" type="range" min="1" max="50" step="1" value="1" oninput="document.getElementById('tesShow').innerHTML=this.value;" style="width: 50%;">
         		<span id="tesShow">1</span>
                 <br>
