@@ -20,6 +20,94 @@
 		let resultScreen=[];
 		const average = arr => arr.reduce((p, c) => p + c, 0) / arr.length;
 
+		var arr = {	
+			max: function(array) {
+				return Math.max.apply(null, array);
+			},
+			
+			min: function(array) {
+				return Math.min.apply(null, array);
+			},
+			
+			range: function(array) {
+				return arr.max(array) - arr.min(array);
+			},
+			
+			midrange: function(array) {
+				return arr.range(array) / 2;
+			},
+
+			sum: function(array) {
+				var num = 0;
+				for (var i = 0, l = array.length; i < l; i++) num += array[i];
+				return num;
+			},
+			
+			mean: function(array) {
+				return arr.sum(array) / array.length;
+			},
+			
+			median: function(array) {
+				array.sort(function(a, b) {
+					return a - b;
+				});
+				var mid = array.length / 2;
+				return mid % 1 ? array[mid - 0.5] : (array[mid - 1] + array[mid]) / 2;
+			},
+			
+			modes: function(array) {
+				if (!array.length) return [];
+				var modeMap = {},
+					maxCount = 0,
+					modes = [];
+
+				array.forEach(function(val) {
+					if (!modeMap[val]) modeMap[val] = 1;
+					else modeMap[val]++;
+
+					if (modeMap[val] > maxCount) {
+						modes = [val];
+						maxCount = modeMap[val];
+					}
+					else if (modeMap[val] === maxCount) {
+						modes.push(val);
+						maxCount = modeMap[val];
+					}
+				});
+				return modes;
+			},
+			
+			variance: function(array) {
+				var mean = arr.mean(array);
+				return arr.mean(array.map(function(num) {
+					return Math.pow(num - mean, 2);
+				}));
+			},
+			
+			standardDeviation: function(array) {
+				return Math.sqrt(arr.variance(array));
+			},
+			
+			meanAbsoluteDeviation: function(array) {
+				var mean = arr.mean(array);
+				return arr.mean(array.map(function(num) {
+					return Math.abs(num - mean);
+				}));
+			},
+			
+			zScores: function(array) {
+				var mean = arr.mean(array);
+				var standardDeviation = arr.standardDeviation(array);
+				return array.map(function(num) {
+					return (num - mean) / standardDeviation;
+				});
+			},
+			inconsistency: function(array){
+				return Math.sqrt(arr.mean(array.map(function(num){
+					return Math.pow(num, 2);
+				})))
+			}
+		};
 
 		const getPermutations= function (arr, selectNumber) {
 			const results = [];
@@ -41,6 +129,7 @@
 			let _subjectInput="";
 			testerNum = document.getElementById('testerNum').value ;
 			subjectNum = document.getElementById('subjectNum').value;
+			projectName = document.getElementById('projectName').value;
 			document.getElementById('step1').style.visibility="hidden";
 
 			document.getElementById('result').innerHTML = `결과값 : subjectNum = ${subjectNum} testerNum = ${testerNum}`;
@@ -116,12 +205,18 @@
 			
 		}
 
+
+
 		function TestProcessEnd(){
 			testerCount=1;
 			console.log("끝")
 			document.getElementById('testerInput').innerHTML = `완료`;
-			resultScreenOut = "<p> 평가자	";
-			resultScreenOut += `,${subjectList.toString()}		`;
+			resultScreenOut = `<table style="width: 50%;" > <caption> ${projectName}</caption> <Tr> <th> Name </th>	`;
+			
+			for (z=0; z<subjectList.length ; z++){
+				resultScreenOut += `<th>Item ${subjectList[z]}</th>`;
+			}
+				resultScreenOut += `<th> Incn </th> </tr>`;			
 			for (k=0; k<testerNum ; k++){
 				resultProcess.push({});
 				let l=1
@@ -148,6 +243,7 @@
 			let _tempAA;
 			let _tempXX;
 			let _temp100 ;
+			
 			for (t=0;t<testerNum;t++) {
 
 				let _temp200 =[];
@@ -227,32 +323,82 @@
 
 								
 				testerResultSum.push(testerResult);
+				let _temparr2 = [];
 
 				for(i=0;i<subjectList.length;i++){
 					let _sum = 0;
+					let _temparr =[];
+					
 					for(j=0; j<resultPermutation.length;j++){
 
 						_sum += testerResultSum[t][j][subjectList[i]];
+						_temparr.push(Number(testerResultSum[t][j][subjectList[i]].toFixed(4)));
 												
 					}
+					console.log(_temparr);
+					resultScreen[t]["mean"+subjectList[i]] = arr.mean(_temparr);
+					resultScreen[t]["std"+subjectList[i]] = arr.standardDeviation(_temparr);
+					resultScreen[t]["variance"+subjectList[i]] = arr.variance(_temparr);
+					resultScreen[t][subjectList[i]]=(Number((_sum/resultPermutation.length).toFixed(4)));
 					
-					
-					resultScreen[t][subjectList[i]]=((_sum/resultPermutation.length).toFixed(4));
-					
+					_temparr2.push(arr.standardDeviation(_temparr));
 				}
-				resultScreenOut += "</p>";
+				resultScreen[t]["inconsistency"] = (arr.inconsistency(_temparr2)).toFixed(4);
+
+				
 				
 
-				resultScreenOut += `<p> ${testerInputResult[t][0].value} `;
+				resultScreenOut += `<tr> <td> ${testerInputResult[t][0].value} </td> `;
 				for(i=0;i<subjectList.length;i++){
 
-					resultScreenOut += `, ${resultScreen[t][subjectList[i]]} `;
+					resultScreenOut += `<td> ${resultScreen[t][subjectList[i]]} </td>`; // 개별 아이템 값의 평가자 평균 값
 
 				}
-				resultScreenOut += "</p>";
+				resultScreenOut += `<td> ${resultScreen[t]["inconsistency"]}</td></tr>`;
 
+				
+				
 
 			}
+
+			let _temparr3 =[];
+			for (i=0;i<subjectList.length;i++){
+				_temparr3.push([]);
+				for (t=0;t<testerNum;t++) {
+					_temparr3[i][t]=(resultScreen[t][subjectList[i]]);
+				}
+			}
+
+			resultScreenOut +=` <tr> <td> Mean </td>`
+			
+			let _temparr4 =[];
+			for (i=0;i<subjectList.length;i++){
+				resultScreenOut +=`<td> ${(arr.mean(_temparr3[i])).toFixed(4)} </td>`;
+				_temparr4.push(arr.standardDeviation(_temparr3[i]));
+			}
+
+			resultScreenOut +=` <td> ${((arr.inconsistency(_temparr4)).toFixed(4))} </td>`;
+
+			resultScreenOut +=` </tr> <tr> <td> Min </td>`;
+			
+			for (i=0;i<subjectList.length;i++){
+				resultScreenOut +=`<td> ${(arr.min(_temparr3[i])).toFixed(4)} </td>`;
+			}
+ 
+			resultScreenOut +=` </tr> <tr> <td> Max </td>`;
+			
+			for (i=0;i<subjectList.length;i++){
+				resultScreenOut +=`<td> ${(arr.max(_temparr3[i])).toFixed(4)} </td>`;
+			}
+
+			resultScreenOut +=` </tr> <tr> <td> Std Dev </td>`;
+			
+			for (i=0;i<subjectList.length;i++){
+				resultScreenOut +=`<td> ${(arr.standardDeviation(_temparr3[i])).toFixed(4)} </td>`;
+			}
+
+			resultScreenOut +=` </tr> </table>`;
+		
 
 			resultScreenOut += `<br><button onclick="TesterResultOut();"> 개별 평가데이터 확인 </button>`;
 			document.getElementById('resultScreenOut').innerHTML = resultScreenOut; //resultScreenOut;
@@ -268,6 +414,7 @@
 			console.log(_tempXX);
 			console.log(testerResult);
 			console.log(testerResultSum);
+			console.log(resultScreen);
 
 		}
 	
@@ -305,7 +452,8 @@
 	<body>
 		<div class="title">
 			<p>
-				Project Name<input type="text" id="projectName" value="ABC Project">  
+				Project Name
+				<input type="text" id="projectName" value="ABC Project">  
 			</p>
 			<div>
 				Number of items to compare
