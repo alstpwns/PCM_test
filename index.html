@@ -79,9 +79,9 @@
 			
 			variance: function(array) {
 				var mean = arr.mean(array);
-				return arr.mean(array.map(function(num) {
+				return (arr.sum(array.map(function(num) {
 					return Math.pow(num - mean, 2);
-				}));
+				}))) / (array.length - 1);
 			},
 			
 			standardDeviation: function(array) {
