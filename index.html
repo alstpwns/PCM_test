@@ -141,7 +141,7 @@
 
 					 
 				}
-				_subjectInput = _subjectInput + `<br><button id="step2" onclick="TestProcess()"> 저장 후 평가자별 평가시작 </button>`;
+				_subjectInput = _subjectInput + `<br><button id="step2" onclick="TestProcess()"> Start comparing </button>`;
 				document.getElementById('subjectNameInput').innerHTML = _subjectInput;
 				
 				
@@ -214,7 +214,7 @@
 			resultScreenOut = `<table style="width: 50%;" > <caption> ${projectName}</caption> <Tr> <th> Name </th>	`;
 			
 			for (z=0; z<subjectList.length ; z++){
-				resultScreenOut += `<th>Item ${subjectList[z]}</th>`;
+				resultScreenOut += `<th>${subjectList[z]}</th>`;
 			}
 				resultScreenOut += `<th> Incn </th> </tr>`;			
 			for (k=0; k<testerNum ; k++){
@@ -467,7 +467,7 @@
         		<span id="tesShow">1</span>
                 <br>
 
-                <button id = "step1" onclick="SubjectInput()">저장 후 평가대상 이름 입력 </button>
+                <button id = "step1" onclick="SubjectInput()">Create a project</button>
 			
 			</div>
 
