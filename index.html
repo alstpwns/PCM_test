@@ -192,7 +192,7 @@
 
 							}
 						}
-					_testerInput = _testerInput + ` </form><br><button onclick="TesterInputProcess(); TestProcess();"> 다음 평가 </button>`;	
+					_testerInput = _testerInput + ` </form><br><button onclick="TesterInputProcess(); TestProcess();"> Next </button>`;	
 					document.getElementById('testerInput').innerHTML = _testerInput;
 					testerCount++;
 				}
@@ -400,7 +400,7 @@
 			resultScreenOut +=` </tr> </table>`;
 		
 
-			resultScreenOut += `<br><button onclick="TesterResultOut();"> 개별 평가데이터 확인 </button>`;
+			resultScreenOut += `<br><button onclick="TesterResultOut();"> Show indivisual sheets </button>`;
 			document.getElementById('resultScreenOut').innerHTML = resultScreenOut; //resultScreenOut;
 
 			console.log(testerInputResult);
